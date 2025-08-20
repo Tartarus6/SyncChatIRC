@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "syncchatirc",
+	"version": "${version}",
+	"name": "SyncChatIRC",
+	"description": "IRC chat integration for Minecraft servers - bridges Minecraft chat with IRC channels",
+	"authors": [
+		"tar"
+	],
+	"contact": {
+		"homepage": "https://github.com/yourusername/SyncChatIRC",
+		"sources": "https://github.com/yourusername/SyncChatIRC"
+	},
+	"license": "MIT",
+	"icon": "assets/syncchatirc/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"tar.syncchatirc.SyncChatIRC"
+		],
+		"client": [
+			"tar.syncchatirc.SyncChatIRCClient"
+		]
+	},
+	"mixins": [
+		"syncchatirc.mixins.json",
+		{
+			"config": "syncchatirc.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.14",
+		"minecraft": "~1.21.8",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

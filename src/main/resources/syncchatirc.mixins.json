@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "tar.syncchatirc.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"ServerPlayerEntityMixin",
+		"PlayerAdvancementTrackerMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

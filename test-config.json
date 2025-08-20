@@ -1,0 +1,19 @@
+{
+  "server": "irc.oftc.net",
+  "port": 6667,
+  "nickname": "MinecraftBot_Test",
+  "username": "MinecraftBot_Test",
+  "realname": "Minecraft IRC Bot Test",
+  "channel": "#test",
+  "enabled": true,
+  "useSSL": false,
+  "serverPassword": "",
+  "channelPassword": "",
+  "relayServerMessages": true,
+  "relayJoinLeave": true,
+  "relayDeathMessages": true,
+  "messageFormat": "[MC] <%s> %s",
+  "joinFormat": "[MC] * %s joined the game",
+  "leaveFormat": "[MC] * %s left the game",
+  "deathFormat": "[MC] * %s"
+}
