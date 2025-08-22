@@ -19,6 +19,7 @@ public class IRCConfig {
     public boolean enabled = true;
     public boolean useSSL = false;
     public String serverPassword = "";
+    public String userPassword = ""; // Password for user authentication (NickServ IDENTIFY)
     public String channelPassword = "";
     public boolean relayServerMessages = true;
     public boolean relayJoinLeave = true;
