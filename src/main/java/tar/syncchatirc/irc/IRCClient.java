@@ -47,6 +47,12 @@ public class IRCClient {
 
                 client = builder.build();
                 
+                // Add user authentication if password is provided
+                if (config.userPassword != null && !config.userPassword.isEmpty()) {
+                    SyncChatIRC.LOGGER.info("User password configured - will authenticate as {} after connection", config.username);
+                }
+                
+                
                 // Add event listeners
                 client.getEventManager().registerEventListener(this);
                 
@@ -97,7 +103,17 @@ public class IRCClient {
         connected = true;
         SyncChatIRC.LOGGER.info("Connected to IRC server");
         
-        // Join the channel after connecting
+        
+        // Perform user authentication if password is provided
+        if (config.userPassword != null && !config.userPassword.isEmpty()) {
+            SyncChatIRC.LOGGER.info("Authenticating with NickServ...");
+            // Send IDENTIFY command to NickServ for user authentication
+            client.sendRawLine("PRIVMSG NickServ :IDENTIFY " + config.userPassword);
+        }
+
+        
+        
+        // Join the channel after connecting and authentication
         if (config.channelPassword != null && !config.channelPassword.isEmpty()) {
             // Use raw IRC command for password-protected channels
             SyncChatIRC.LOGGER.info("Joining password-protected channel: {}", config.channel);
@@ -121,18 +137,35 @@ public class IRCClient {
 
         String nickname = event.getActor().getNick();
         String message = event.getMessage();
+        String sourceType = "[IRC] ";
         
         // Don't relay our own messages back
         if (nickname.equals(config.nickname)) {
             return;
         }
+        
+        // IF nickname is "GN", parse message and check for text inside "<>", set that to the nickname
+        if (nickname.equals("GN")) {
+            sourceType = "";
+            int start = message.indexOf('<');
+            int end = message.indexOf('>');
+            if (start != -1 && end != -1 && end > start) {
+                nickname = message.substring(start + 1, end).trim();
+                message = message.substring(end + 1).trim();
+                sourceType = "[GN] ";
+            }
+        }
+
+        final String nicknameFinal = nickname;
+        final String messageFinal = message;
+        final String sourceTypeFinal = sourceType;
 
         // Send to Minecraft server
         if (server != null) {
             server.execute(() -> {
-                Text ircMessage = Text.literal(String.format("[IRC] <%s> %s", nickname, message));
+                Text ircMessage = Text.literal(String.format("<%s> %s%s", nicknameFinal, sourceTypeFinal, messageFinal));
                 server.getPlayerManager().broadcast(ircMessage, false);
-                SyncChatIRC.LOGGER.info("IRC -> MC: <{}> {}", nickname, message);
+                SyncChatIRC.LOGGER.info("IRC -> MC: <{}> {}", nicknameFinal, messageFinal);
             });
         }
     }
