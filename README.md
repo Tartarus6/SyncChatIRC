@@ -14,8 +14,7 @@ It works well as simply an IRC bridge, but some features have been added specifi
   - `/irc connect`: attempts connection to IRC server
   - `/irc disconnect`: disconnects from IRC server
   - `/irc reload`: (NOT IMPLEMENTED) reloads configuration
-  - `/irc send`: manually send message to IRC server (for testing)
-  - `/irc test`: (NON-FUNCTIONAL) test mod functionality
+  - `/irc send`: manually send message to IRC server
 
 ### Configuration
 The configuration file is located at `config/syncchatirc.json`

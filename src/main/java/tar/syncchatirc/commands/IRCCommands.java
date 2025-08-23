@@ -8,7 +8,6 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import tar.syncchatirc.SyncChatIRC;
-import tar.syncchatirc.test.IRCTestUtils;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -30,8 +29,6 @@ public class IRCCommands {
                 .executes(IRCCommands::connect))
             .then(literal("disconnect")
                 .executes(IRCCommands::disconnect))
-            .then(literal("test")
-                .executes(IRCCommands::runTests))
             .then(literal("send")
                 .then(argument("message", StringArgumentType.greedyString())
                     .executes(IRCCommands::sendMessage)))
@@ -119,22 +116,6 @@ public class IRCCommands {
         source.sendFeedback(() -> Text.literal("Message sent to IRC: " + message), false);
         
         return 1;
-    }
-    
-    private static int runTests(CommandContext<ServerCommandSource> context) {
-        ServerCommandSource source = context.getSource();
-        
-        source.sendFeedback(() -> Text.literal("Running IRC tests..."), false);
-        
-        boolean result = IRCTestUtils.runAllTests();
-        
-        if (result) {
-            source.sendFeedback(() -> Text.literal("All IRC tests passed! ✓"), false);
-        } else {
-            source.sendFeedback(() -> Text.literal("Some IRC tests failed! ✗"), false);
-        }
-        
-        return result ? 1 : 0;
     }
     
     private static int reloadConfig(CommandContext<ServerCommandSource> context) {
