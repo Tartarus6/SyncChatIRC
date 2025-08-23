@@ -144,6 +144,8 @@ public class IRCClient {
             return;
         }
         
+        // This is specifically to mesh with the "GN" bot that is the partner project also titled
+        // "SyncChatIRC", bridging Synchronet BBS multinode chat to IRC. It uses the nickname "GN".
         // IF nickname is "GN", parse message and check for text inside "<>", set that to the nickname
         if (nickname.equals("GN")) {
             sourceType = "";
