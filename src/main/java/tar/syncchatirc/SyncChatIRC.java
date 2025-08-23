@@ -70,4 +70,55 @@ public class SyncChatIRC implements ModInitializer {
 	public static IRCClient getIrcClient() {
 		return ircClient;
 	}
+	
+	public static ChatEventHandler getChatEventHandler() {
+		return chatEventHandler;
+	}
+	
+	public static void reloadConfig(MinecraftServer server) {
+		LOGGER.info("Reloading IRC configuration...");
+		
+		// Stop current IRC client if running
+		if (ircClient != null && ircClient.isConnected()) {
+			LOGGER.info("Disconnecting current IRC client...");
+			ircClient.disconnect();
+		}
+		
+		// Reload configuration from file
+		config = IRCConfig.load();
+		LOGGER.info("Configuration reloaded from file");
+		
+		// Reinitialize IRC client and event handler if enabled
+		if (config.enabled && server != null) {
+			LOGGER.info("Reinitializing IRC client with new configuration...");
+			
+			// Initialize new IRC client
+			ircClient = new IRCClient(config, server);
+			
+			// Update or initialize chat event handler
+			if (chatEventHandler == null) {
+				chatEventHandler = new ChatEventHandler(ircClient, config);
+				chatEventHandler.register();
+			} else {
+				chatEventHandler.updateConfig(ircClient, config);
+			}
+			
+			// Connect to IRC with new configuration
+			ircClient.connect().exceptionally(throwable -> {
+				LOGGER.error("Failed to connect to IRC after reload", throwable);
+				return null;
+			});
+		} else if (!config.enabled) {
+			LOGGER.info("IRC integration disabled in reloaded config");
+			ircClient = null;
+			// Keep chatEventHandler but update it to use null references
+			if (chatEventHandler != null) {
+				chatEventHandler.updateConfig(null, config);
+			}
+		} else {
+			LOGGER.warn("Cannot initialize IRC client: server is null");
+		}
+		
+		LOGGER.info("IRC configuration reload completed");
+	}
 }

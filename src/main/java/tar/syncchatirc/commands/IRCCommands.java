@@ -4,10 +4,12 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import tar.syncchatirc.SyncChatIRC;
+import tar.syncchatirc.config.IRCConfig;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -128,11 +130,26 @@ public class IRCCommands {
         ServerCommandSource source = context.getSource();
         
         try {
-            // This would require modifying the main class to support reloading
-            source.sendFeedback(() -> Text.literal("Config reload not yet implemented"), false);
-            return 0;
+            // Get the server instance for reinitializing the IRC client
+            MinecraftServer server = source.getServer();
+            
+            source.sendFeedback(() -> Text.literal("Reloading IRC configuration..."), false);
+            
+            // Call the reload method in the main class
+            SyncChatIRC.reloadConfig(server);
+            
+            // Report success
+            IRCConfig newConfig = SyncChatIRC.getConfig();
+            String status = newConfig.enabled ? "enabled" : "disabled";
+            source.sendFeedback(() -> Text.literal(String.format(
+                "IRC configuration reloaded successfully!\nStatus: %s\nServer: %s:%d\nChannel: %s", 
+                status, newConfig.server, newConfig.port, newConfig.channel
+            )), false);
+            
+            return 1;
         } catch (Exception e) {
             source.sendFeedback(() -> Text.literal("Failed to reload config: " + e.getMessage()), false);
+            SyncChatIRC.LOGGER.error("Failed to reload IRC config", e);
             return 0;
         }
     }

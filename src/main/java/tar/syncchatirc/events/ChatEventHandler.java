@@ -9,18 +9,32 @@ import tar.syncchatirc.config.IRCConfig;
 import tar.syncchatirc.irc.IRCClient;
 
 public class ChatEventHandler {
-    private final IRCClient ircClient;
-    private final IRCConfig config;
+    private IRCClient ircClient;
+    private IRCConfig config;
+    private static boolean registered = false;
 
     public ChatEventHandler(IRCClient ircClient, IRCConfig config) {
         this.ircClient = ircClient;
         this.config = config;
     }
+    
+    public void updateConfig(IRCClient ircClient, IRCConfig config) {
+        this.ircClient = ircClient;
+        this.config = config;
+    }
 
     public void register() {
+        // Only register the event handlers once to avoid duplicates
+        if (!registered) {
+            registerEventHandlers();
+            registered = true;
+        }
+    }
+    
+    private void registerEventHandlers() {
         // Handle chat messages
         ServerMessageEvents.CHAT_MESSAGE.register((message, sender, params) -> {
-            if (config.enabled && ircClient.isConnected()) {
+            if (config != null && config.enabled && ircClient != null && ircClient.isConnected()) {
                 String playerName = sender.getDisplayName().getString();
                 String chatMessage = message.getContent().getString();
                 String formattedMessage = String.format(config.messageFormat, playerName, chatMessage);
@@ -31,26 +45,24 @@ public class ChatEventHandler {
         });
 
         // Handle player join/leave events
-        if (config.relayJoinLeave) {
-            ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-                if (config.enabled && ircClient.isConnected()) {
-                    String playerName = handler.getPlayer().getDisplayName().getString();
-                    String joinMessage = String.format(config.joinFormat, playerName);
-                    
-                    ircClient.sendMessage(joinMessage);
-                    SyncChatIRC.LOGGER.debug("MC -> IRC: {} joined", playerName);
-                }
-            });
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            if (config != null && config.enabled && config.relayJoinLeave && ircClient != null && ircClient.isConnected()) {
+                String playerName = handler.getPlayer().getDisplayName().getString();
+                String joinMessage = String.format(config.joinFormat, playerName);
+                
+                ircClient.sendMessage(joinMessage);
+                SyncChatIRC.LOGGER.debug("MC -> IRC: {} joined", playerName);
+            }
+        });
 
-            ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-                if (config.enabled && ircClient.isConnected()) {
-                    String playerName = handler.getPlayer().getDisplayName().getString();
-                    String leaveMessage = String.format(config.leaveFormat, playerName);
-                    
-                    ircClient.sendMessage(leaveMessage);
-                    SyncChatIRC.LOGGER.debug("MC -> IRC: {} left", playerName);
-                }
-            });
-        }
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+            if (config != null && config.enabled && config.relayJoinLeave && ircClient != null && ircClient.isConnected()) {
+                String playerName = handler.getPlayer().getDisplayName().getString();
+                String leaveMessage = String.format(config.leaveFormat, playerName);
+                
+                ircClient.sendMessage(leaveMessage);
+                SyncChatIRC.LOGGER.debug("MC -> IRC: {} left", playerName);
+            }
+        });
     }
 }

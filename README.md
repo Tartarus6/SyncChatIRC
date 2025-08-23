@@ -13,7 +13,7 @@ It works well as simply an IRC bridge, but some features have been added specifi
 - `/irc`
   - `/irc connect`: attempts connection to IRC server
   - `/irc disconnect`: disconnects from IRC server
-  - `/irc reload`: (NOT IMPLEMENTED) reloads configuration
+  - `/irc reload`: reloads configuration from file and reconnects with new settings
   - `/irc send`: manually send message to IRC server
 
 ### Configuration
