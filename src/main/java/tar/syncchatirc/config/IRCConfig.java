@@ -25,11 +25,11 @@ public class IRCConfig {
     public boolean relayJoinLeave = true;
     public boolean relayDeathMessages = true;
     public boolean relayAdvancements = true;
-    public String messageFormat = "[MC] <%s> %s";
-    public String joinFormat = "[MC] * %s joined the game";
-    public String leaveFormat = "[MC] * %s left the game";
-    public String deathFormat = "[MC] * %s";
-    public String advancementFormat = "[MC] * %s has made the advancement [%s]";
+    public String messageFormat = "<%s> %s";
+    public String joinFormat = "%s joined the game";
+    public String leaveFormat = "%s left the game";
+    public String deathFormat = "%s";
+    public String advancementFormat = "%s has made the advancement [%s]";
     
     private static final String CONFIG_FILE = "config/syncchatirc.json";
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
