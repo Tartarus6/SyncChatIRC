@@ -1,1 +1,56 @@
-["{\"transientOutputs\":true,\"transientCellMetadata\":{\"inputCollapsed\":true,\"outputCollapsed\":true},\"transientDocumentMetadata\":{},\"cellContentMetadata\":{}}","{\"cells\":[{\"cellKind\":1,\"language\":\"markdown\",\"metadata\":{\"leadingWhitespace\":\"\",\"trailingWhitespace\":\"\"},\"outputs\":[],\"source\":\"# SyncChatIRC\\n\\nThis is a Fabric Minecraft mod that enables communication through IRC to an external IRC server.\\n\\n\\n### Features\\n- Chat messages in MC show up in IRC, and vice versa\\n- Death messages from Minecraft appear over IRC\\n- Advancement messages from Minecraft appear over IRC\\n\\n### Commands\\n- `/irc`\\n  - `/irc connect`: attempts connection to IRC server\\n  - `/irc disconnect`: disconnects from IRC server\\n  - `/irc reload`: (NOT IMPLEMENTED) reloads configuration\\n  - `/irc send`: manually send message to IRC server (for testing)\\n  - `/irc test`: (NON-FUNCTIONAL) test mod functionality\\n\\n### Configuration\\nThe configuration file is located at `config/syncchatirc.json`\\n\\n#### Password Configuration\\n- `serverPassword`: Password required to connect to the IRC server (if required)\\n- `userPassword`: Password for user authentication via NickServ IDENTIFY command - used when your nickname is registered and requires authentication\\n- `channelPassword`: Password for joining password-protected channels\\n\\nExample Configuration:\",\"internalMetadata\":{\"internalId\":\"4b65f7d8\"}},{\"cellKind\":2,\"language\":\"json\",\"metadata\":{\"leadingWhitespace\":\"\",\"trailingWhitespace\":\"\\n\\n\"},\"outputs\":[],\"source\":\"{\\n  \\\"server\\\": \\\"irc.example.com\\\",\\n  \\\"port\\\": 6667,\\n  \\\"nickname\\\": \\\"MinecraftBot\\\",\\n  \\\"username\\\": \\\"MinecraftBot\\\",\\n  \\\"realname\\\": \\\"Minecraft IRC Bot\\\",\\n  \\\"channel\\\": \\\"#mc\\\",\\n  \\\"enabled\\\": true,\\n  \\\"useSSL\\\": false,\\n  \\\"serverPassword\\\": \\\"\\\",\\n  \\\"userPassword\\\": \\\"\\\",\\n  \\\"channelPassword\\\": \\\"\\\",\\n  \\\"relayServerMessages\\\": true,\\n  \\\"relayJoinLeave\\\": true,\\n  \\\"relayDeathMessages\\\": true,\\n  \\\"relayAdvancements\\\": true,\\n  \\\"messageFormat\\\": \\\"[MC] <%s> %s\\\",\\n  \\\"joinFormat\\\": \\\"[MC] * %s joined the game\\\",\\n  \\\"leaveFormat\\\": \\\"[MC] * %s left the game\\\",\\n  \\\"deathFormat\\\": \\\"[MC] * %s\\\",\\n  \\\"advancementFormat\\\": \\\"[MC] * %s has made the advancement [%s]\\\"\\n}\",\"internalMetadata\":{\"internalId\":\"2bdb4928\"}},{\"cellKind\":1,\"language\":\"markdown\",\"metadata\":{\"leadingWhitespace\":\"\",\"trailingWhitespace\":\"\"},\"outputs\":[],\"source\":\"### Screenshots\\n<img width=\\\"1632\\\" height=\\\"492\\\" alt=\\\"image\\\" src=\\\"https://github.com/user-attachments/assets/061994af-3a66-4c1b-b7cf-79c3207b14f6\\\" />\\n<img width=\\\"1416\\\" height=\\\"368\\\" alt=\\\"image\\\" src=\\\"https://github.com/user-attachments/assets/b4158f06-ade3-4d64-9d2c-6490c68e6940\\\" />\",\"internalMetadata\":{\"internalId\":\"ae761765\"}}],\"metadata\":{}}"]
+# SyncChatIRC
+
+This is a Fabric Minecraft mod that enables communication through IRC to an external IRC server.
+It works well as simply an IRC bridge, but some features have been added specifically to mesh with the partner project, also called [SyncChatIRC](https://github.com/greenturtle537/SyncChatIRC), which is a bridge between the Synchronet BBS multinode chat and IRC.
+
+
+### Features
+- Chat messages in MC show up in IRC, and vice versa
+- Death messages from Minecraft appear over IRC
+- Advancement messages from Minecraft appear over IRC
+
+### Commands
+- `/irc`
+  - `/irc connect`: attempts connection to IRC server
+  - `/irc disconnect`: disconnects from IRC server
+  - `/irc reload`: reloads configuration from file and reconnects with new settings
+  - `/irc send`: manually send message to IRC server
+
+### Configuration
+The configuration file is located at `config/syncchatirc.json`
+
+#### Password Configuration
+- `serverPassword`: Password required to connect to the IRC server (if required)
+- `userPassword`: Password for user authentication via NickServ IDENTIFY command - used when your nickname is registered and requires authentication
+- `channelPassword`: Password for joining password-protected channels
+
+Example Configuration:
+
+```json
+{
+  "server": "irc.example.com",
+  "port": 6667,
+  "nickname": "MinecraftBot",
+  "username": "MinecraftBot",
+  "realname": "Minecraft IRC Bot",
+  "channel": "#mc",
+  "enabled": true,
+  "useSSL": false,
+  "serverPassword": "",
+  "userPassword": "",
+  "channelPassword": "",
+  "relayServerMessages": true,
+  "relayJoinLeave": true,
+  "relayDeathMessages": true,
+  "relayAdvancements": true,
+  "messageFormat": "<%s> %s",
+  "joinFormat": "%s joined the game",
+  "leaveFormat": "%s left the game",
+  "deathFormat": "%s",
+  "advancementFormat": "%s has made the advancement [%s]"
+}
+```
+
+### Screenshots
+<img width="1632" height="492" alt="image" src="https://github.com/user-attachments/assets/061994af-3a66-4c1b-b7cf-79c3207b14f6" />
+<img width="1416" height="368" alt="image" src="https://github.com/user-attachments/assets/b4158f06-ade3-4d64-9d2c-6490c68e6940" />

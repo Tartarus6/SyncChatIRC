@@ -21,7 +21,7 @@ public class IRCClient {
     private final IRCConfig config;
     private final MinecraftServer server;
     private Client client;
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean connected = false;
     private volatile boolean shouldReconnect = true;
 
@@ -31,6 +31,11 @@ public class IRCClient {
     }
 
     public CompletableFuture<Void> connect() {
+        // Create a new executor if the current one is shut down
+        if (executor.isShutdown()) {
+            executor = Executors.newSingleThreadExecutor();
+        }
+        
         return CompletableFuture.runAsync(() -> {
             try {
                 SyncChatIRC.LOGGER.info("Starting IRC client...");
@@ -144,6 +149,8 @@ public class IRCClient {
             return;
         }
         
+        // This is specifically to mesh with the "GN" bot that is the partner project also titled
+        // "SyncChatIRC", bridging Synchronet BBS multinode chat to IRC. It uses the nickname "GN".
         // IF nickname is "GN", parse message and check for text inside "<>", set that to the nickname
         if (nickname.equals("GN")) {
             sourceType = "";
