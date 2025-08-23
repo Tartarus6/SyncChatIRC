@@ -72,9 +72,15 @@ public class IRCCommands {
         }
         
         source.sendFeedback(() -> Text.literal("Attempting to connect to IRC..."), false);
-        SyncChatIRC.getIrcClient().connect().thenRun(() -> {
-            source.sendFeedback(() -> Text.literal("IRC connection attempt completed"), false);
-        });
+        SyncChatIRC.getIrcClient().connect()
+            .thenRun(() -> {
+                source.sendFeedback(() -> Text.literal("IRC connection attempt completed"), false);
+            })
+            .exceptionally(throwable -> {
+                source.sendFeedback(() -> Text.literal("IRC connection failed: " + throwable.getMessage()), false);
+                SyncChatIRC.LOGGER.error("IRC connection failed", throwable);
+                return null;
+            });
         
         return 1;
     }

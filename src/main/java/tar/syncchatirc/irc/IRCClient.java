@@ -21,7 +21,7 @@ public class IRCClient {
     private final IRCConfig config;
     private final MinecraftServer server;
     private Client client;
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean connected = false;
     private volatile boolean shouldReconnect = true;
 
@@ -31,6 +31,11 @@ public class IRCClient {
     }
 
     public CompletableFuture<Void> connect() {
+        // Create a new executor if the current one is shut down
+        if (executor.isShutdown()) {
+            executor = Executors.newSingleThreadExecutor();
+        }
+        
         return CompletableFuture.runAsync(() -> {
             try {
                 SyncChatIRC.LOGGER.info("Starting IRC client...");
